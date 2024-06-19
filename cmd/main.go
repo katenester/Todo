@@ -7,17 +7,18 @@ import (
 	"github.com/katenester/Todo/pkg/repository"
 	"github.com/katenester/Todo/pkg/service"
 	_ "github.com/lib/pq"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"log"
 	"os"
 )
 
 func main() {
+	logrus.SetFormatter(new(logrus.JSONFormatter))
 	if err := initConfig(); err != nil {
-		log.Fatalf("error initalization config %s", err.Error())
+		logrus.Fatalf("error initalization config %s", err.Error())
 	}
 	if err := godotenv.Load(); err != nil {
-		log.Fatalf("error initalization db password(file env) %s", err.Error())
+		logrus.Fatalf("error initalization db password(file env) %s", err.Error())
 	}
 	db, err := repository.NewPostgresDB(repository.Config{
 		Host:     viper.GetString("db.host"),
@@ -28,7 +29,7 @@ func main() {
 		Password: os.Getenv("DB_PASSWORD"),
 	})
 	if err != nil {
-		log.Fatalf("error initalization db %s", err.Error())
+		logrus.Fatalf("error initalization db %s", err.Error())
 	}
 	// Внедрение зависимостей
 	repos := repository.NewRepository(db)
@@ -36,8 +37,8 @@ func main() {
 	handlers := handler.NewHandler(services)
 
 	srv := new(todo.Server)
-	if err := srv.Run(viper.GetString("8080"), handlers.InitRoutes()); err != nil {
-		log.Fatalf("error occured while running http server %s", err.Error())
+	if err := srv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
+		logrus.Fatalf("error occured while running http server %s", err.Error())
 	}
 }
 

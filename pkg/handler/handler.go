@@ -18,8 +18,8 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 	auth := router.Group("/auth")
 	{
-		auth.POST("/sign-up", h.sigIp)
-		auth.POST("/sign-in", h.sigUp)
+		auth.POST("/sign-up", h.sigUp)
+		auth.POST("/sign-in", h.sigIp)
 	}
 	api := router.Group("/api")
 	{
