@@ -1,4 +1,4 @@
-package todo_app
+package todo
 
 // TodoList структура списка дел для каждого пользователя
 type TodoList struct {
