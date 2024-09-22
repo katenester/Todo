@@ -17,6 +17,7 @@ func main() {
 	if err := initConfig(); err != nil {
 		logrus.Fatalf("error initalization config %s", err.Error())
 	}
+	// Download variables env
 	if err := godotenv.Load(); err != nil {
 		logrus.Fatalf("error initalization db password(file env) %s", err.Error())
 	}
@@ -31,7 +32,7 @@ func main() {
 	if err != nil {
 		logrus.Fatalf("error initalization db %s", err.Error())
 	}
-	// Внедрение зависимостей
+	// Dependency injection for architecture application
 	repos := repository.NewRepository(db)
 	services := service.NewService(repos)
 	handlers := handler.NewHandler(services)

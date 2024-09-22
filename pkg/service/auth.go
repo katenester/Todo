@@ -2,6 +2,7 @@ package service
 
 import (
 	"crypto/sha1"
+	"errors"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	todo "github.com/katenester/Todo"
@@ -11,7 +12,7 @@ import (
 
 const (
 	salt       = "sfsgGhJjJJHgFRdehYgu"
-	signingKey = "qrkjk#4#%35FSFJlja#4353KSFjH"
+	signingKey = "qrkjk#4#%35FSFJlja#4353KSFjH" // Ключ подписи
 	tokenTTL   = 12 * time.Hour
 )
 
@@ -54,4 +55,21 @@ func (s *AuthService) GenerateToken(username, password string) (string, error) {
 		user.Id,
 	})
 	return token.SignedString([]byte(signingKey))
+}
+
+func (s *AuthService) ParseToken(accessToken string) (int, error) {
+	token, err := jwt.ParseWithClaims(accessToken, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("invalid signature method")
+		}
+		return []byte(signingKey), nil
+	})
+	if err != nil {
+		return 0, err
+	}
+	claims, ok := token.Claims.(*tokenClaims)
+	if !ok {
+		return 0, errors.New("token claims is not of type *tokenClaims")
+	}
+	return claims.UserId, nil
 }

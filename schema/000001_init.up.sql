@@ -35,7 +35,3 @@ CREATE TABLE lists_items
     item_id int references todo_items (id) on delete cascade not null,
     list_id int references todo_lists (id) on delete cascade not null
 );
-
-SELECT * FROM pg_catalog.pg_tables;
-
-select * from users;
