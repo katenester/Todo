@@ -11,6 +11,7 @@ func (h *Handler) createList(c *gin.Context) {
 	//  Take value UserId from context
 	UserId, ok := getUserId(c)
 	if ok != nil {
+		newErrorResponse(c, http.StatusInternalServerError, ok.Error())
 		return
 	}
 	var input todo.TodoList
@@ -25,7 +26,7 @@ func (h *Handler) createList(c *gin.Context) {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"id": id})
+	c.JSON(http.StatusOK, map[string]interface{}{"id": id})
 
 }
 
@@ -37,6 +38,7 @@ func (h *Handler) getAllLists(c *gin.Context) {
 	//  Take value UserId from context
 	UserId, ok := getUserId(c)
 	if ok != nil {
+		newErrorResponse(c, http.StatusInternalServerError, ok.Error())
 		return
 	}
 	// call service method
@@ -51,6 +53,7 @@ func (h *Handler) getListById(c *gin.Context) {
 	//  Take value UserId from context
 	UserId, ok := getUserId(c)
 	if ok != nil {
+		newErrorResponse(c, http.StatusInternalServerError, ok.Error())
 		return
 	}
 	ListId, err := strconv.Atoi(c.Param("id"))
@@ -70,6 +73,7 @@ func (h *Handler) updateList(c *gin.Context) {
 	//  Take value UserId from context
 	UserId, ok := getUserId(c)
 	if ok != nil {
+		newErrorResponse(c, http.StatusInternalServerError, ok.Error())
 		return
 	}
 	ListId, err := strconv.Atoi(c.Param("id"))
@@ -98,6 +102,7 @@ func (h *Handler) deleteList(c *gin.Context) {
 	//  Take value UserId from context
 	UserId, ok := getUserId(c)
 	if ok != nil {
+		newErrorResponse(c, http.StatusInternalServerError, ok.Error())
 		return
 	}
 	ListId, err := strconv.Atoi(c.Param("id"))

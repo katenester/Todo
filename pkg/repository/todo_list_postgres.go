@@ -41,6 +41,7 @@ func (t *TodoListPostgres) GetAll(userId int) ([]todo.TodoList, error) {
 	return lists, err
 }
 
+// GetById - Get id list by id user
 func (t *TodoListPostgres) GetById(userId int, listId int) (todo.TodoList, error) {
 	var list todo.TodoList
 	query := fmt.Sprintf(`SELECT t1.id, t1.title,t1.description FROM %s t1 inner join %s t2

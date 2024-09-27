@@ -26,8 +26,8 @@ func (s *TodoListService) Delete(userId int, listId int) error {
 	return s.repo.Delete(userId, listId)
 }
 func (s *TodoListService) Update(userId int, listId int, input todo.TodoListInput) error {
-	if input.Valid() != nil {
-		return input.Valid()
+	if err := input.Valid(); err != nil {
+		return err
 	}
 	return s.repo.Update(userId, listId, input)
 }
