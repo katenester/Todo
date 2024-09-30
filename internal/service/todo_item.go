@@ -1,8 +1,8 @@
 package service
 
 import (
-	todo "github.com/katenester/Todo"
-	"github.com/katenester/Todo/pkg/repository"
+	todo "github.com/katenester/Todo/internal/models"
+	"github.com/katenester/Todo/internal/repository"
 )
 
 type TodoItemService struct {

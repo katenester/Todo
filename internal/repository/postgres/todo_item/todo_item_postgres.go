@@ -1,9 +1,10 @@
-package repository
+package todo_item
 
 import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
-	todo "github.com/katenester/Todo"
+	todo "github.com/katenester/Todo/internal/models"
+	"github.com/katenester/Todo/internal/repository/postgres/config"
 	"strings"
 )
 
@@ -21,14 +22,14 @@ func (t *TodoItemPostgres) Create(listId int, item todo.TodoItem) (int, error) {
 		return 0, err
 	}
 	var itemId int
-	createItemQuery := fmt.Sprintf("INSERT INTO %s (title,description) VALUES ($1,$2) RETURNING id", todoItemsTable)
+	createItemQuery := fmt.Sprintf("INSERT INTO %s (title,description) VALUES ($1,$2) RETURNING id", config.TodoItemsTable)
 	row := tx.QueryRow(createItemQuery, item.Title, item.Description)
 	err = row.Scan(&itemId)
 	if err != nil {
 		tx.Rollback()
 		return 0, err
 	}
-	createListItemQuery := fmt.Sprintf("INSERT INTO %s (item_id,list_id) VALUES ($1,$2)", listsItemsTable)
+	createListItemQuery := fmt.Sprintf("INSERT INTO %s (item_id,list_id) VALUES ($1,$2)", config.ListsItemsTable)
 	_, err = tx.Exec(createListItemQuery, itemId, listId)
 	if err != nil {
 		tx.Rollback()
@@ -41,18 +42,18 @@ func (t *TodoItemPostgres) GetAll(userId int, listId int) ([]todo.TodoItem, erro
 	query := fmt.Sprintf(`SELECT item.id, item.title,item.description,item.done from %s item 
                                              inner join %s listItem on item.id=listItem.item_id
                                              inner join %s userList on userList.list_id=listItem.list_id
-                                             where userList.user_id=$1 and userList.list_id=$2`, todoItemsTable, listsItemsTable, usersListsTable)
+                                             where userList.user_id=$1 and userList.list_id=$2`, config.TodoItemsTable, config.ListsItemsTable, config.UsersListsTable)
 	return items, t.db.Select(&items, query, userId, listId)
 }
 func (t *TodoItemPostgres) GetById(userId int, itemId int) (todo.TodoItem, error) {
 	var item todo.TodoItem
 	query := fmt.Sprintf(`SELECT items.id,items.title,items.description, items.done from %s items inner join %s listItem on listItem.item_id=items.id
                                   inner join %s usersList on usersList.list_id=listItem.list_id
-                                  where usersList.user_id=$1 and items.id=$2`, todoItemsTable, listsItemsTable, usersListsTable)
+                                  where usersList.user_id=$1 and items.id=$2`, config.TodoItemsTable, config.ListsItemsTable, config.UsersListsTable)
 	return item, t.db.Get(&item, query, userId, itemId)
 }
 func (t *TodoItemPostgres) Delete(userId int, itemId int) error {
-	query := fmt.Sprintf(`DELETE FROM %s item where item.id=$1`, todoItemsTable)
+	query := fmt.Sprintf(`DELETE FROM %s item where item.id=$1`, config.TodoItemsTable)
 	_, err := t.db.Exec(query, itemId)
 	return err
 }
@@ -75,7 +76,7 @@ func (t *TodoItemPostgres) Update(userId int, itemId int, item todo.TodoItemInpu
 		args = append(args, *item.Done)
 		countArgs++
 	}
-	query := fmt.Sprintf(`UPDATE %s items set %s where items.id=$%d`, todoItemsTable, strings.Join(setValues, ", "), countArgs)
+	query := fmt.Sprintf(`UPDATE %s items set %s where items.id=$%d`, config.TodoItemsTable, strings.Join(setValues, ", "), countArgs)
 	args = append(args, itemId)
 	_, err := t.db.Exec(query, args...)
 	return err

@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
-	todo "github.com/katenester/Todo"
-	"github.com/katenester/Todo/pkg/repository"
+	todo "github.com/katenester/Todo/internal/models"
+	"github.com/katenester/Todo/internal/repository"
 	"time"
 )
 

@@ -1,8 +1,8 @@
-package handler
+package transport
 
 import (
 	"github.com/gin-gonic/gin"
-	todo "github.com/katenester/Todo"
+	todo "github.com/katenester/Todo/internal/models"
 	"github.com/sirupsen/logrus"
 	"net/http"
 )

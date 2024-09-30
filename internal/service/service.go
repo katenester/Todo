@@ -1,30 +1,30 @@
 package service
 
 import (
-	todo "github.com/katenester/Todo"
-	"github.com/katenester/Todo/pkg/repository"
+	"github.com/katenester/Todo/internal/models"
+	"github.com/katenester/Todo/internal/repository"
 )
 
 type Authorization interface {
-	CreateUser(user todo.User) (int, error)
+	CreateUser(user models.User) (int, error)
 	GenerateToken(username, password string) (string, error)
 	ParseToken(token string) (int, error)
 }
 
 type TodoList interface {
-	Create(userId int, list todo.TodoList) (int, error)
-	GetAll(userId int) ([]todo.TodoList, error)
-	GetById(userId int, listId int) (todo.TodoList, error)
+	Create(userId int, list models.TodoList) (int, error)
+	GetAll(userId int) ([]models.TodoList, error)
+	GetById(userId int, listId int) (models.TodoList, error)
 	Delete(userId int, listId int) error
-	Update(userId int, listId int, list todo.TodoListInput) error
+	Update(userId int, listId int, list models.TodoListInput) error
 }
 
 type TodoItem interface {
-	Create(userId, listId int, item todo.TodoItem) (int, error)
-	GetAll(userId int, listId int) ([]todo.TodoItem, error)
-	GetById(userId int, itemId int) (todo.TodoItem, error)
+	Create(userId, listId int, item models.TodoItem) (int, error)
+	GetAll(userId int, listId int) ([]models.TodoItem, error)
+	GetById(userId int, itemId int) (models.TodoItem, error)
 	Delete(userId int, itemId int) error
-	Update(userId int, itemId int, item todo.TodoItemInput) error
+	Update(userId int, itemId int, item models.TodoItemInput) error
 }
 
 type Service struct {

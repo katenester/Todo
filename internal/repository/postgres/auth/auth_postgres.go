@@ -1,9 +1,10 @@
-package repository
+package auth
 
 import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
-	todo "github.com/katenester/Todo"
+	todo "github.com/katenester/Todo/internal/models"
+	"github.com/katenester/Todo/internal/repository/postgres/config"
 )
 
 type AuthPostgres struct {
@@ -16,7 +17,7 @@ func NewAuthPostgres(db *sqlx.DB) *AuthPostgres {
 
 func (a *AuthPostgres) CreateUser(user todo.User) (int, error) {
 	var id int
-	query := fmt.Sprintf("INSERT INTO %s (name, username, password_hash) VALUES($1,$2,$3) RETURNING id", usersTable)
+	query := fmt.Sprintf("INSERT INTO %s (name, username, password_hash) VALUES($1,$2,$3) RETURNING id", config.UsersTable)
 	row := a.db.QueryRow(query, user.Name, user.Username, user.Password)
 	if err := row.Scan(&id); err != nil {
 		return 0, err
@@ -26,7 +27,7 @@ func (a *AuthPostgres) CreateUser(user todo.User) (int, error) {
 
 func (a *AuthPostgres) GetUser(username, password string) (todo.User, error) {
 	var user todo.User
-	query := fmt.Sprintf("SELECT id FROM %s WHERE username=$1 AND password_hash=$2 ", usersTable)
+	query := fmt.Sprintf("SELECT id FROM %s WHERE username=$1 AND password_hash=$2 ", config.UsersTable)
 	// Получаем один результат
 	err := a.db.Get(&user, query, username, password)
 	return user, err
