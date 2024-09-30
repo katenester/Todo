@@ -117,7 +117,7 @@ func (h *Handler) getListById(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param id path int true "List ID"
-// @Param body models.UpdateTodoCategory true "Update List Body"
+// @Param input body models.TodoListInput true "Update List Body"
 // @Success 200 {object} models.ListItem
 // @Failure 400,404 {object} errorResponse
 // @Failure 500 {object} errorResponse
