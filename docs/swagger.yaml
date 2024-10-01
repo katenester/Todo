@@ -40,6 +40,19 @@ definitions:
       title:
         type: string
     type: object
+  models.User:
+    properties:
+      name:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - name
+    - password
+    - username
+    type: object
   transport.errorResponse:
     properties:
       message:
@@ -51,6 +64,16 @@ definitions:
         items:
           $ref: '#/definitions/models.TodoList'
         type: array
+    type: object
+  transport.signInInput:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
     type: object
 host: localhost:8000
 info:
@@ -466,6 +489,84 @@ paths:
       summary: Create todo item
       tags:
       - item
+  /auth/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: login
+      operationId: login
+      parameters:
+      - description: credentials
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/transport.signInInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: token
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/transport.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/transport.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/transport.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/transport.errorResponse'
+      summary: SignIn
+      tags:
+      - auth
+  /auth/sign-up:
+    post:
+      consumes:
+      - application/json
+      description: create account
+      operationId: create-account
+      parameters:
+      - description: account info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/transport.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/transport.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/transport.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/transport.errorResponse'
+      summary: SignUp
+      tags:
+      - auth
 securityDefinitions:
   ApiKeyAuth:
     in: header
