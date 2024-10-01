@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS todo_lists
 
 CREATE TABLE IF NOT EXISTS users_lists
 (
-    id      serial                                           primary key
+    id      serial                                           primary key,
     user_id int references users (id) on delete cascade      not null,
     list_id int references todo_lists (id) on delete cascade not null
 );
