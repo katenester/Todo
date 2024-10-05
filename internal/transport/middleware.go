@@ -18,14 +18,20 @@ func (h *Handler) userIdentity(c *gin.Context) {
 		newErrorResponse(c, http.StatusUnauthorized, "empty authorization header")
 		return
 	}
-	headedParts := strings.Split(header, " ")
-	if len(headedParts) != 2 {
+	headerParts := strings.Split(header, " ")
+	if len(headerParts) != 2 || headerParts[0] != "Bearer" {
 		newErrorResponse(c, http.StatusUnauthorized, "invalid authorization header")
+		return
+	}
+	if len(headerParts[1]) == 0 {
+		newErrorResponse(c, http.StatusUnauthorized, "token is empty")
+		return
 	}
 	// parse token
-	userId, err := h.service.ParseToken(headedParts[1])
+	userId, err := h.service.ParseToken(headerParts[1])
 	if err != nil {
 		newErrorResponse(c, http.StatusUnauthorized, err.Error())
+		return
 	}
 	// Write value id in context (need for access id in another service (for another  handlers))
 	c.Set(userCtx, userId)

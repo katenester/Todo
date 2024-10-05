@@ -14,6 +14,7 @@ import (
 )
 
 func TestHandler_signUp(t *testing.T) {
+	// Init Test Table
 	type mockBehavior func(r *servicemocks.MockAuthorization, user models.User)
 
 	tests := []struct {
@@ -29,6 +30,7 @@ func TestHandler_signUp(t *testing.T) {
 			inputBody: `{"username": "username", "name": "Test Name", "password": "qwerty"}`,
 			inputUser: models.User{
 				Username: "username",
+				Name:     "Test Name",
 				Password: "qwerty",
 			},
 			mockBehavior: func(r *servicemocks.MockAuthorization, user models.User) {
@@ -50,6 +52,7 @@ func TestHandler_signUp(t *testing.T) {
 			inputBody: `{"username": "username", "name": "Test Name", "password": "qwerty"}`,
 			inputUser: models.User{
 				Username: "username",
+				Name:     "Test Name",
 				Password: "qwerty",
 			},
 			mockBehavior: func(r *servicemocks.MockAuthorization, user models.User) {
