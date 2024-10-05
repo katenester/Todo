@@ -14,7 +14,7 @@
 - Graceful Shutdown
 
 ## Install
-1. Clone project `git clone https://github.com/katenester/Distributed_computing`
+1. Clone project `git clone https://github.com/katenester/Todo`
 2. Install all dependencies from go.mod `go mod download` `go mod tidy`
 3. `make build` `make run`
 4. To stop `make stop`
