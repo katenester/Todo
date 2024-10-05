@@ -45,34 +45,38 @@ func (t *TodoListPostgres) GetAll(userId int) ([]todo.TodoList, error) {
 // GetById - Get id list by id user
 func (t *TodoListPostgres) GetById(userId int, listId int) (todo.TodoList, error) {
 	var list todo.TodoList
-	query := fmt.Sprintf(`SELECT t1.id, t1.title,t1.description FROM %s t1 inner join %s t2
-		on t1.id=t2.list_id where t1.id=$1 and t2.user_id=$2`, config.TodoListsTable, config.UsersListsTable)
+	query := fmt.Sprintf(`SELECT t1.id, t1.title,t1.description FROM %s t1 INNER JOIN %s t2
+		ON t1.id=t2.list_id WHERE t1.id=$1 AND t2.user_id=$2`, config.TodoListsTable, config.UsersListsTable)
 	err := t.db.Get(&list, query, listId, userId)
 	return list, err
 }
 
 func (t *TodoListPostgres) Delete(userId int, listId int) error {
-	query := fmt.Sprintf(`DELETE FROM %s as t1 USING %s as t2 WHERE t2.list_id=t1.id and t1.id=$1 and t2.user_id=$2`, config.TodoListsTable, config.UsersListsTable)
+	query := fmt.Sprintf(`DELETE FROM %s t1 USING %s t2 WHERE t2.list_id=t1.id AND t1.id=$1 AND t2.user_id=$2`, config.TodoListsTable, config.UsersListsTable)
 	_, err := t.db.Exec(query, listId, userId)
 	return err
 }
 func (t *TodoListPostgres) Update(userId int, listId int, input todo.TodoListInput) error {
 	setValues := make([]string, 0)
 	// slice for placeholders
-	//args := make([]interface{}, 0)
-	//argId := 1
+	args := make([]interface{}, 0)
+	countArgs := 1
 	if input.Title != nil {
-		setValues = append(setValues, fmt.Sprintf("title='%s'", *input.Title))
-
+		setValues = append(setValues, fmt.Sprintf("title=%d", countArgs))
+		args = append(args, *input.Title)
+		countArgs++
 	}
 	if input.Description != nil {
-		setValues = append(setValues, fmt.Sprintf("description='%s'", *input.Description))
+		setValues = append(setValues, fmt.Sprintf("description='%d'", countArgs))
+		args = append(args, *input.Description)
+		countArgs++
 	}
 	//strings.Join(setValues, ", ")
-	query := fmt.Sprintf(`UPDATE %s t1 SET %s FROM %s t2 WHERE t2.list_id=t1.id and t1.id= $1 and t2.user_id= $2`,
+	query := fmt.Sprintf(`UPDATE %s t1 SET %s FROM %s t2 WHERE t2.list_id=t1.id AND t1.id= $1 AND t2.user_id= $2`,
 		config.TodoListsTable, strings.Join(setValues, ", "), config.UsersListsTable)
+	args = append(args, listId, userId)
 	logrus.Debugf("update Query: %s", query)
 	logrus.Debugf("setValues: %s", setValues)
-	_, err := t.db.Exec(query, listId, userId)
+	_, err := t.db.Exec(query, args...)
 	return err
 }

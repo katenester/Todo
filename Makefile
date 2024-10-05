@@ -17,4 +17,4 @@ swag:
 	swag init -g cmd/main.go
 
 stop:
-	docker-compose stop todo-app
+	docker-compose stop
