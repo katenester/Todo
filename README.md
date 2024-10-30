@@ -37,4 +37,4 @@ Next, you need the Authorization header (JWT token)
 11. UPDATE ITEM -`PUT http://localhost:8080/api/items/{ID_ITEM}`
 12. DELETE ITEM - `DELETE http://localhost:8080/api/items/{ID_ITEM}`
 
-**File: [Postman](https://github.com/katenester/Todo/blob/main/postman/Todo.postman_collection.json)** for import Postman Application
+**File: [Postman](https://github.com/katenester/Todo/blob/main/postman/Todo.postman_collection.json)** for import Postman Application  
